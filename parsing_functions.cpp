@@ -34,14 +34,14 @@ int parse_cost_per_hour(std::ifstream& input_file)
     std::getline(input_file, line);
     return std::stoi(line);
 }
-std::vector<Event> parse_events(std::ifstream& input_file)
+std::vector<Event> parse_events(std::istream& input_stream)
 {
     std::vector<Event> events;
     std::regex event_regex(
-        R"((\d{2}:\d{2}) (\d+) (.+))"); // 09:00 4 John or 18:00 12 Mary 4
+        R"((\d{2}:\d{2}) (\d+) (.+))"); // 09:00 4 client1
     std::smatch match;
     std::string line;
-    while (std::getline(input_file, line)) {
+    while (std::getline(input_stream, line)) {
         bool valid_event = std::regex_match(line, match, event_regex);
         if (valid_event) {
             std::string time_str = match[1];
