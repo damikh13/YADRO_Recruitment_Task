@@ -63,8 +63,16 @@ std::optional<Event> Computer_Club::handle_client_start_waiting_(const Time& eve
         return Event(event_time, 13, "Invalid client name: " + client_name);
     }
 
+    if (!client_exists(clients_, client_name)) {
+        return Event(event_time, 13, "ClientUnknown");
+    }
+
     if (is_table_available(tables_)) {
         return Event(event_time, 13, "ICanWaitNoLonger!");
+    }
+
+    if (clients_[client_name].seated) {
+        return Event(event_time, 13, "Error: client " + client_name + " is happily seated and doesn't want to enter the waiting list");
     }
 
     bool queue_at_full_capacity = waiting_list_.size() == tables_.size();
@@ -170,7 +178,7 @@ void Computer_Club::process_events_(std::vector<Event>& events)
         std::cout << event << std::endl;
 
         if (event.time > end_time_) {
-            Event late_event(end_time_, 13, "Error: event is after closing time");
+            Event late_event(event.time, 13, "Error: event is after closing time");
             std::cout << late_event << std::endl;
             ++i;
             continue;
@@ -216,14 +224,17 @@ Computer_Club::Computer_Club(const std::string& filename)
 {
     int num_of_tables;
     int cost_per_hour;
-    std::vector<Event> events;
+//    std::vector<Event> events;
     parse_input(filename, num_of_tables, start_time_, end_time_, cost_per_hour,
-        events);
+        events_);
 
     cost_per_hour_ = cost_per_hour;
 
     initialize_tables_(num_of_tables);
-    process_events_(events);
+}
+void Computer_Club::simulate()
+{
+    process_events_(events_);
 }
 void Computer_Club::print_tables()
 {
