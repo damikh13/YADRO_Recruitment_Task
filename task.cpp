@@ -10,6 +10,7 @@ int main(int argc, char* argv[])
     Computer_Club club(argv[1]);
 
     std::cout << club.get_start_time() << std::endl;
+    club.simulate();
     std::cout << club.get_end_time() << std::endl;
     club.print_tables();
 
