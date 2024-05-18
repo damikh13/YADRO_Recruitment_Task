@@ -18,7 +18,7 @@ std::optional<Event> Computer_Club::handle_client_arrival_(const Time& arrival_t
         return Event(arrival_time, 13, "NotOpenYet");
     }
 
-    Client new_client(client_name, arrival_time);
+    Client new_client(client_name);
     clients_[client_name] = new_client;
 
     return std::nullopt;
@@ -155,6 +155,8 @@ std::optional<Event> Computer_Club::handle_event_(Event& event)
         break;
     case 13:
         break;
+    default:
+        new_event = Event(event.time, 13, "Error: unknown event ID");
     }
 
     return new_event;
