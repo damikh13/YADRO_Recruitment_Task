@@ -2,7 +2,7 @@
 
 bool is_valid_client_name(const std::string& client_name)
 {
-    return std::regex_match(client_name, std::regex("^[a-zA-Z0-9_-]+$"));
+    return std::regex_match(client_name, std::regex("^[a-z0-9_-]+$"));
 }
 bool client_exists(const std::unordered_map<std::string, Client>& clients, const std::string& client_name)
 {
