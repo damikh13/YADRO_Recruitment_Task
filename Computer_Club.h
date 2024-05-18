@@ -15,6 +15,7 @@ private:
     Time start_time_;
     Time end_time_;
     int cost_per_hour_;
+    std::vector<Event> events_;
 
     std::optional<Event> handle_client_arrival_(const Time& arrival_time, const std::string& event_body);
     std::optional<Event> handle_client_sit_(const Time& event_time, const std::string& event_body);
@@ -28,6 +29,7 @@ private:
 
 public:
     Computer_Club(const std::string& filename);
+    void simulate();
     Time get_start_time() const { return start_time_; }
     Time get_end_time() const { return end_time_; }
     void print_tables();
