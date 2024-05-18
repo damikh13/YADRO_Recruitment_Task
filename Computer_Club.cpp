@@ -85,7 +85,7 @@ std::optional<Event> Computer_Club::handle_client_start_waiting_(const Time& eve
 
     return std::nullopt;
 }
-std::optional<Event> Computer_Club::handle_client_leave__table_(const Time& event_time, const std::string& event_body)
+std::optional<Event> Computer_Club::handle_client_leave_table_(const Time& event_time, const std::string& event_body)
 {
     const std::string& client_name = event_body;
     if (!is_valid_client_name(client_name)) {
@@ -106,7 +106,7 @@ std::optional<Event> Computer_Club::handle_client_leave__table_(const Time& even
 
     clients_.erase(client_name);
 
-    // find a client from the waiting list
+    // find a client from the waiting list to sit at the freed table
     if (!waiting_list_.empty()) {
         Client next_client = waiting_list_.front();
         waiting_list_.pop();
@@ -153,7 +153,7 @@ std::optional<Event> Computer_Club::handle_event_(Event& event)
         new_event = handle_client_start_waiting_(event.time, event.body);
         break;
     case 4:
-        new_event = handle_client_leave__table_(event.time, event.body);
+        new_event = handle_client_leave_table_(event.time, event.body);
         break;
     case 11:
         handle_client_leave_(event.time, event.body);
@@ -187,28 +187,25 @@ void Computer_Club::process_events_(std::vector<Event>& events)
         std::optional<Event> new_event = handle_event_(event);
 
         if (new_event.has_value()) {
-            event = new_event.value();
-            if (i > 0) {
-                --i;
-            } else {
-                continue;
-            }
+            event = new_event.value(); // replace the current event with the new one
+            continue; // don't increment i, so we can process this new event in the next iteration
         }
 
         ++i;
     }
 
-    std::vector<std::string> clients_to_leave;
-    clients_to_leave.reserve(clients_.size());
+    // handle clients that are still in the club after closing time
+    std::vector<std::string> remaining_clients_names;
+    remaining_clients_names.reserve(clients_.size());
     for (const auto& client : clients_) {
-        clients_to_leave.push_back(client.first);
+        remaining_clients_names.push_back(client.first);
     }
 
-    std::sort(clients_to_leave.begin(), clients_to_leave.end());
+    std::sort(remaining_clients_names.begin(), remaining_clients_names.end());
 
-    for (const auto& client_name : clients_to_leave) {
+    for (const auto& client_name : remaining_clients_names) {
         Event leave_event(end_time_, 11, client_name);
-        handle_client_leave__table_(leave_event.time, leave_event.body);
+        handle_client_leave_(leave_event.time, leave_event.body);
     }
 }
 void Computer_Club::initialize_tables_(int num_of_tables)
@@ -224,7 +221,6 @@ Computer_Club::Computer_Club(const std::string& filename)
 {
     int num_of_tables;
     int cost_per_hour;
-//    std::vector<Event> events;
     parse_input(filename, num_of_tables, start_time_, end_time_, cost_per_hour,
         events_);
 

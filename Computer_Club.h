@@ -20,7 +20,7 @@ private:
     std::optional<Event> handle_client_arrival_(const Time& arrival_time, const std::string& event_body);
     std::optional<Event> handle_client_sit_(const Time& event_time, const std::string& event_body);
     std::optional<Event> handle_client_start_waiting_(const Time& event_time, const std::string& event_body);
-    std::optional<Event> handle_client_leave__table_(const Time& event_time, const std::string& event_body);
+    std::optional<Event> handle_client_leave_table_(const Time& event_time, const std::string& event_body);
     void handle_client_leave_(const Time& event_time, const std::string& event_body);
 
     std::optional<Event> handle_event_(Event& event);
