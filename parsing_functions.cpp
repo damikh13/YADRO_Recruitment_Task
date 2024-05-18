@@ -19,8 +19,7 @@ Time parse_time(const std::string& time_str)
     std::regex time_regex("^([01]?[0-9]|2[0-3]):[0-5][0-9]$");
     if (!std::regex_match(time_str, time_regex)) {
         throw std::runtime_error(
-            "Invalid time format. Time should be in HH:MM format with leading "
-            "zeros.");
+            "Invalid time format: " + time_str);
     }
     std::string hour_str = time_str.substr(0, 2);
     std::string minute_str = time_str.substr(3, 2);
@@ -70,5 +69,6 @@ void parse_input(const std::string& filename, int& num_of_tables, Time& start_ti
         input_file.close();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
+        exit(1);
     }
 }
