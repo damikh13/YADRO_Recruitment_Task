@@ -5,10 +5,20 @@ set(CMAKE_CXX_STANDARD 20)
 
 enable_testing()
 
-find_package(GTest REQUIRED)
+include(FetchContent)
 
-include_directories(${GTEST_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR})
+FetchContent_Declare(
+        googletest
+        URL https://github.com/google/googletest/archive/release-1.11.0.zip
+)
 
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(googletest)
+
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_BINARY_DIR})
+
+# Main executable
 add_executable(computer_club
         task.cpp
         Computer_Club_STRUCTS.h
@@ -20,12 +30,14 @@ add_executable(computer_club
         parsing_functions.cpp
 )
 
-target_link_libraries(computer_club ${GTEST_LIBRARIES} pthread)
-
+# Test executables
 add_executable(test_PARSING tests/test_PARSING.cpp parsing_functions.cpp)
 add_executable(test_HELPERS tests/test_HELPRES.cpp helper_functions.cpp)
-target_link_libraries(test_PARSING ${GTEST_LIBRARIES} pthread)
-target_link_libraries(test_HELPERS ${GTEST_LIBRARIES} pthread)
+
+# Link libraries
+target_link_libraries(computer_club pthread)
+target_link_libraries(test_PARSING gtest gtest_main pthread)
+target_link_libraries(test_HELPERS gtest gtest_main pthread)
 
 # CTest
 add_test(NAME TestParsingFuncs COMMAND test_PARSING)

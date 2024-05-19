@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "parsing_functions.h"
+#include "../parsing_functions.h"
 
 TEST(ParseTime, valid_time_format) {
     std::string time_str = "12:30";

@@ -1,6 +1,6 @@
-#include "Computer_Club_STRUCTS.h"
-#include "helper_functions.h"
 #include <gtest/gtest.h>
+#include "../Computer_Club_STRUCTS.h"
+#include "../helper_functions.h"
 
 TEST(ValidClientName, name_with_lowercase_letters)
 {
